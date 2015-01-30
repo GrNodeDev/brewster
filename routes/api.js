@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var request = require('request');
+var Favorite = require('../models/favorite');
 
 router.get('/breweries', function(req, res) {
     var name = req.param('name');
@@ -37,12 +38,33 @@ router.get('/beers', function(req, res) {
 
             json = JSON.parse(body);
 
-            for (var i = 0; i < json.data.length; i++) {
-                beers.push(json.data[i].name);
-            }
+            if (json.data) {
 
-            res.send(beers);
+              Favorite.find({ brewery: name}, function(err, favorites) {
+                for (var i = 0; i < json.data.length; i++) {
+                  beers.push({
+                    name: json.data[i].name,
+                    favorite: favorites.filter(function(fav) {
+                        return fav.brewery == name && json.data[i].name == fav.beer;
+                      }).length > 0
+                  });
+                }
+
+                res.send(beers);
+              });
+            }
         });
+    });
+});
+
+router.post('/favorites', function(req, res) {
+    var brewery = req.param('brewery');
+    var beer = req.param('beer');
+
+    var fav = new Favorite({ brewery: brewery, beer: beer });
+    fav.save(function(err) {
+      if (err) { return res.error(err); }
+      res.send();
     });
 });
 

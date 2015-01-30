@@ -1,4 +1,6 @@
 *.log
 .idea/
 dist/
+db/
 node_modules/
+bower_components/
