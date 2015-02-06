@@ -17,7 +17,7 @@
     <div style="float: right; width: 400px">
       <ul>
         <li ng-repeat="beer in beers">
-          {{ beer.name }} <button ng-hide="{{ beer.favorite }}" ng-click="favorite(beer)">favorite</button>
+          {{ beer.name }} <button ng-hide="beer.favorite" ng-click="favorite(beer)">favorite</button>
         </li>
       </ul>
     </div>
